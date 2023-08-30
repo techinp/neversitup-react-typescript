@@ -130,7 +130,7 @@ const Home = (props: Props) => {
               </div>
             </section>
             <section className='flex gap-4 items-center'>
-              <Button onClick={() => fetchTodoList()}>Get All</Button>
+              <Button onClick={() => navigate('/')}>Get All</Button>
               <Button onClick={() => fetchTodoList(paramsId)}>Refresh</Button>
               <Button
                 onClick={() => {
