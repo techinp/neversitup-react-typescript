@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Home.css';
-import { Button, Form, Input, List, Tooltip, message } from 'antd';
+import { Button, Input, List, Popconfirm, Tooltip, message } from 'antd';
 import { METHOD, fetcher } from '../fetcher';
-import { createTodo, getTodo } from '../endpoints';
+import { createTodo, getTodo, deleteTodo } from '../endpoints';
 import ModalCreate from '../components/ModalCreate';
 import { ToDoDataType, ResponseToDoType } from '../interfaces';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -12,7 +12,6 @@ type Props = {};
 
 const Home = (props: Props) => {
   const navigate = useNavigate();
-  const [form] = Form.useForm();
   const [searchParams] = useSearchParams('get');
   const paramsId = searchParams.get('id') as string;
 
@@ -32,7 +31,6 @@ const Home = (props: Props) => {
         query: id || '',
       });
       if (response._id) {
-        console.log('response.title :', response.title);
         setList([response]);
       }
     } else {
@@ -49,12 +47,19 @@ const Home = (props: Props) => {
 
     if (response?._id) {
       message.success('Create Todo List Success');
-      form.resetFields();
       setModalOpen(false);
       await fetchTodoList(paramsId);
     } else {
       message.success('Something Error');
     }
+  };
+
+  const deleteTodoList = async (value: ResponseToDoType) => {
+    await fetcher(deleteTodo, METHOD.DELETE, {
+      query: value._id,
+    });
+    message.success(`Delete "${value.title}" Success`);
+    navigate('/');
   };
 
   const onSearchTitle = async (value: string) => {
@@ -117,14 +122,23 @@ const Home = (props: Props) => {
                             icon={<EditOutlined />}
                           />
                         </Tooltip>
-                        <Tooltip title='delete'>
-                          <Button
-                            type='text'
-                            danger
-                            shape='circle'
-                            icon={<DeleteOutlined />}
-                          />
-                        </Tooltip>
+
+                        <Popconfirm
+                          title={`Delete ${item.title}`}
+                          description='Are you sure to delete this item?'
+                          onConfirm={() => deleteTodoList(item)}
+                          okText='Yes'
+                          cancelText='No'
+                        >
+                          <Tooltip title='delete'>
+                            <Button
+                              type='text'
+                              danger
+                              shape='circle'
+                              icon={<DeleteOutlined />}
+                            />
+                          </Tooltip>
+                        </Popconfirm>
                       </div>
                     </section>
                   }
