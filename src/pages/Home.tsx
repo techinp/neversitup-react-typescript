@@ -1,42 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import './Home.css';
-import {
-  Avatar,
-  Button,
-  Form,
-  Input,
-  List,
-  Skeleton,
-  Tooltip,
-  message,
-} from 'antd';
+import { Button, Form, Input, List, Tooltip, message } from 'antd';
 import { METHOD, fetcher } from '../fetcher';
 import { createTodo, getTodo } from '../endpoints';
 import ModalCreate from '../components/ModalCreate';
 import { ToDoDataType, ResponseToDoType } from '../interfaces';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 type Props = {};
 
 const Home = (props: Props) => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
-  const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams('get');
+  const paramsId = searchParams.get('id') as string;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [list, setList] = useState<ResponseToDoType[]>([]);
   const [loading, setLoading] = useState(false);
 
-  console.log('searchParams :', searchParams.get('id'));
+  useEffect(() => {
+    fetchTodoList(paramsId);
+  }, [paramsId]);
 
-  const fetchTodoList = async () => {
+  const fetchTodoList = async (id?: string) => {
     setLoading(true);
-    const response: ResponseToDoType[] = await fetcher(getTodo, METHOD.GET);
-    console.log('response :', response);
-    if (response.length) {
-      setList(response);
+    setList([]);
+    if (id) {
+      const response: ResponseToDoType = await fetcher(getTodo, METHOD.GET, {
+        query: id || '',
+      });
+      if (response._id) {
+        console.log('response.title :', response.title);
+        setList([response]);
+      }
     } else {
-      setList([]);
+      const response: ResponseToDoType[] = await fetcher(getTodo, METHOD.GET);
+      if (response.length) {
+        setList(response);
+      }
     }
     setLoading(false);
   };
@@ -48,10 +51,19 @@ const Home = (props: Props) => {
       message.success('Create Todo List Success');
       form.resetFields();
       setModalOpen(false);
-      await fetchTodoList();
+      await fetchTodoList(paramsId);
     } else {
       message.success('Something Error');
     }
+  };
+
+  const onSearchTitle = async (value: string) => {
+    if (value) {
+      const response: ResponseToDoType[] = await fetcher(getTodo, METHOD.GET);
+      const item = response.find((item) => item.title === value);
+      if (item?._id) navigate(`/search?id=${item?._id}`);
+      else navigate('/');
+    } else navigate('/');
   };
 
   const handlerModal = (open: boolean) => {
@@ -70,16 +82,16 @@ const Home = (props: Props) => {
           <section className='flex justify-between items-center'>
             <section>
               <Input.Search
-                placeholder='Search'
+                placeholder='Title'
                 enterButton
                 allowClear
                 onSearch={(value) => {
-                  console.log('value', value);
+                  onSearchTitle(value.trim());
                 }}
               />
             </section>
             <section className='flex gap-4 items-center'>
-              <Button onClick={() => fetchTodoList()}>Refresh</Button>
+              <Button onClick={() => fetchTodoList(paramsId)}>Refresh</Button>
               <Button onClick={() => setModalOpen(true)} type='primary'>
                 Create
               </Button>
