@@ -1,7 +1,7 @@
 .header-wrapper {
   height: 80px;
   width: 100%;
-  border-bottom: 4px solid #e87080;
+  border-bottom: 8px solid #ab6882;
   position: fixed;
   display: flex;
   flex-direction: row;

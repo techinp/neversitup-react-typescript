@@ -2,7 +2,6 @@ import './App.css';
 
 import { Route, Routes } from 'react-router-dom';
 
-import Wrapper from './components/Wrapper';
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
 
