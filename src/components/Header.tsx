@@ -33,7 +33,7 @@ const Header = (props: Props) => {
             <h1 className='text-xl'>Hello, {username}</h1>
           </section>
           <section>
-            <Button type='dashed' color='error' onClick={() => onClickLogout()}>
+            <Button type='dashed' danger onClick={() => onClickLogout()}>
               Sign Out
             </Button>
           </section>
