@@ -1,11 +1,11 @@
 import { Button, Form, Input, Modal } from 'antd';
 import React from 'react';
-import { TodoDataType } from '../interfaces';
+import { ToDoDataType } from '../interfaces';
 
 type Props = {
   open: boolean;
   onClose: (open: boolean) => void;
-  onSubmit: (data: TodoDataType) => void;
+  onSubmit: (data: ToDoDataType) => void;
 };
 
 const ModalCreate = ({ open, onClose, onSubmit }: Props) => {

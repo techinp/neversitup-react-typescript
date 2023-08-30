@@ -29,6 +29,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path='/search'
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Wrapper>
     </section>
