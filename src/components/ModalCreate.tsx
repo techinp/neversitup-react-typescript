@@ -1,21 +1,40 @@
-import { Button, Form, Input, Modal } from 'antd';
-import React from 'react';
-import { ToDoDataType } from '../interfaces';
+import { Form, Input, Modal } from 'antd';
+import React, { useEffect } from 'react';
+import { ToDoDataType, UpdateToDoType } from '../interfaces';
 
 type Props = {
   open: boolean;
   onClose: (open: boolean) => void;
   onSubmit: (data: ToDoDataType) => void;
+  onUpdate: (data: UpdateToDoType) => void;
+  updateItem?: UpdateToDoType;
 };
 
-const ModalCreate = ({ open, onClose, onSubmit }: Props) => {
+const ModalCreate = ({
+  open,
+  onClose,
+  onSubmit,
+  updateItem,
+  onUpdate,
+}: Props) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      title: updateItem?.title,
+      description: updateItem?.description,
+    });
+  });
 
   return (
     <Modal
       open={open}
-      title='Create a new todo list'
-      okText='Create'
+      title={
+        updateItem?._id
+          ? `Update ${updateItem.title}`
+          : 'Create a new todo list'
+      }
+      okText={updateItem?._id ? 'Update' : 'Create'}
       cancelText='Cancel'
       onCancel={() => {
         onClose(false);
@@ -26,7 +45,14 @@ const ModalCreate = ({ open, onClose, onSubmit }: Props) => {
           .validateFields()
           .then((values) => {
             form.resetFields();
-            onSubmit(values);
+            if (updateItem?.title && updateItem.description) {
+              onUpdate({
+                _id: updateItem._id,
+                ...values,
+              });
+            } else {
+              onSubmit(values);
+            }
           })
           .catch((info) => {
             console.log('Validate Failed:', info);
@@ -37,7 +63,10 @@ const ModalCreate = ({ open, onClose, onSubmit }: Props) => {
         form={form}
         layout='vertical'
         name='form_modal_create'
-        initialValues={{ title: '', description: '' }}
+        initialValues={{
+          title: updateItem?.title,
+          description: updateItem?.description,
+        }}
       >
         <Form.Item
           label='Title'

@@ -3,6 +3,12 @@ export interface ToDoDataType {
   description: string;
 }
 
+export interface UpdateToDoType {
+  _id: string;
+  title: string;
+  description: string;
+}
+
 export interface ResponseToDoType {
   createdAt: string;
   description: string;

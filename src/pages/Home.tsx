@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './Home.css';
 import { Button, Input, List, Popconfirm, Tooltip, message } from 'antd';
 import { METHOD, fetcher } from '../fetcher';
-import { createTodo, getTodo, deleteTodo } from '../endpoints';
+import { createTodo, getTodo, deleteTodo, updateTodo } from '../endpoints';
 import ModalCreate from '../components/ModalCreate';
-import { ToDoDataType, ResponseToDoType } from '../interfaces';
+import { ToDoDataType, ResponseToDoType, UpdateToDoType } from '../interfaces';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
@@ -18,6 +18,11 @@ const Home = (props: Props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [list, setList] = useState<ResponseToDoType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [updateItem, setUpdateItem] = useState<UpdateToDoType>({
+    _id: '',
+    title: '',
+    description: '',
+  });
 
   useEffect(() => {
     fetchTodoList(paramsId);
@@ -54,6 +59,22 @@ const Home = (props: Props) => {
     }
   };
 
+  const updateTodoList = async (value: UpdateToDoType) => {
+    const body: ToDoDataType = {
+      title: value.title,
+      description: value.description,
+    };
+
+    await fetcher(updateTodo, METHOD.PUT, {
+      body,
+      query: value._id,
+    });
+
+    setModalOpen(false);
+
+    await fetchTodoList(paramsId);
+  };
+
   const deleteTodoList = async (value: ResponseToDoType) => {
     await fetcher(deleteTodo, METHOD.DELETE, {
       query: value._id,
@@ -72,6 +93,11 @@ const Home = (props: Props) => {
   };
 
   const handlerModal = (open: boolean) => {
+    setUpdateItem({
+      _id: '',
+      title: '',
+      description: '',
+    });
     setModalOpen(open);
   };
 
@@ -81,6 +107,8 @@ const Home = (props: Props) => {
         open={modalOpen}
         onClose={handlerModal}
         onSubmit={createTodoList}
+        onUpdate={updateTodoList}
+        updateItem={updateItem}
       />
       <section className='lg:w-3/5 md:w-4/5 w-full mx-auto'>
         <section className='mt-16'>
@@ -97,7 +125,17 @@ const Home = (props: Props) => {
             </section>
             <section className='flex gap-4 items-center'>
               <Button onClick={() => fetchTodoList(paramsId)}>Refresh</Button>
-              <Button onClick={() => setModalOpen(true)} type='primary'>
+              <Button
+                onClick={() => {
+                  setUpdateItem({
+                    _id: '',
+                    title: '',
+                    description: '',
+                  });
+                  setModalOpen(true);
+                }}
+                type='primary'
+              >
                 Create
               </Button>
             </section>
@@ -119,12 +157,20 @@ const Home = (props: Props) => {
                           <Button
                             type='text'
                             shape='circle'
+                            onClick={() => {
+                              setUpdateItem({
+                                _id: item._id,
+                                title: item.title,
+                                description: item.description,
+                              });
+                              setModalOpen(true);
+                            }}
                             icon={<EditOutlined />}
                           />
                         </Tooltip>
 
                         <Popconfirm
-                          title={`Delete ${item.title}`}
+                          title={`Delete "${item.title}"`}
                           description='Are you sure to delete this item?'
                           onConfirm={() => deleteTodoList(item)}
                           okText='Yes'
@@ -150,12 +196,12 @@ const Home = (props: Props) => {
                           created:{' '}
                           {new Date(item.createdAt).toLocaleString('th')}
                         </span>
-                        {/* {item.createdAt != item.updatedAt && ( */}
-                        <span>
-                          updated:{' '}
-                          {new Date(item.createdAt).toLocaleString('th')}
-                        </span>
-                        {/* )} */}
+                        {item.createdAt !== item.updatedAt && (
+                          <span>
+                            updated:{' '}
+                            {new Date(item.updatedAt).toLocaleString('th')}
+                          </span>
+                        )}
                       </div>
                     </section>
                   }

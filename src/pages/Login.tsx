@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input, message } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { fetcher, METHOD } from '../fetcher';
 import { login } from '../endpoints';
 import { Navigate, useNavigate } from 'react-router-dom';

@@ -12,7 +12,9 @@ const fetcher = async (
 ) => {
   let url = process.env.REACT_APP_API_URL + `/${endpoint}`;
 
+  console.log('query :', query);
   if (query) url = `${url}/${query}`;
+  console.log('url :', url);
 
   let headers: HeadersInit = {
     'Content-Type': 'application/json',
@@ -30,7 +32,6 @@ const fetcher = async (
     headers,
   };
 
-  console.log('Object.keys(body).length :', Object.keys(body).length);
   if (Object.keys(body).length) {
     options = {
       ...options,
