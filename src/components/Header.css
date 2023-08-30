@@ -1,0 +1,11 @@
+.header-wrapper {
+  height: 80px;
+  width: 100%;
+  border-bottom: 4px solid #e87080;
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  z-index: 999;
+  background-color: #fff;
+}

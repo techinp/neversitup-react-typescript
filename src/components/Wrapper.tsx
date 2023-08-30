@@ -1,3 +1,4 @@
+import './Wrapper.css';
 import React from 'react';
 
 type Props = {
@@ -5,11 +6,7 @@ type Props = {
 };
 
 const Wrapper = ({ children }: Props) => {
-  return (
-    <section className='container flex justify-center items-center mx-auto flex-col min-h-screen'>
-      {children}
-    </section>
-  );
+  return <section className='container wrapper'>{children}</section>;
 };
 
 export default Wrapper;

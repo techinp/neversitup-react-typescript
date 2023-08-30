@@ -8,7 +8,7 @@ enum METHOD {
 const fetcher = async (
   endpoint: string,
   method: METHOD,
-  { body = {}, query = '', credentials = true }
+  { body = {}, query = '', credentials = true } = {}
 ) => {
   let url = process.env.REACT_APP_API_URL + `/${endpoint}`;
 
@@ -21,15 +21,25 @@ const fetcher = async (
   if (credentials) {
     headers = {
       ...headers,
-      authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+      authorization: `Bearer ${window.localStorage.getItem('token')}`,
     };
   }
 
-  const data = await fetch(url, {
+  let options: RequestInit = {
     method,
     headers,
-    body: JSON.stringify(body),
-  });
+  };
+
+  console.log('Object.keys(body).length :', Object.keys(body).length);
+  if (Object.keys(body).length) {
+    options = {
+      ...options,
+      body: JSON.stringify(body),
+    };
+  }
+
+  console.log('options :', options);
+  const data = await fetch(url, options);
   return await data.json();
 };
 

@@ -1,6 +1,7 @@
+import './Header.css';
 import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {};
 
@@ -22,16 +23,20 @@ const Header = (props: Props) => {
 
   if (show) {
     return (
-      <section className='absolute h-20 w-full flex justify-around items-center'>
-        <section className='font-bold text-2xl hidden md:block'>
+      <section className='header-wrapper'>
+        <section className='font-bold text-2xl hidden md:block whitespace-nowrap md:pl-8 pl-0'>
           Nerversitup Todo List
         </section>
 
-        <section className='flex justify-end items-center gap-4'>
-          <h1>Hello, {username}</h1>
-          <Button type='dashed' color='error' onClick={() => onClickLogout()}>
-            Sign Out
-          </Button>
+        <section className='flex md:justify-end justify-around items-center gap-4 w-full md:pr-8 pr-0'>
+          <section>
+            <h1 className='text-xl'>Hello, {username}</h1>
+          </section>
+          <section>
+            <Button type='dashed' color='error' onClick={() => onClickLogout()}>
+              Sign Out
+            </Button>
+          </section>
         </section>
       </section>
     );
