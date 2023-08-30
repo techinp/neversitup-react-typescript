@@ -10,33 +10,29 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 
 function App() {
-  const token = localStorage.getItem('token');
-
   return (
     <section className='App'>
-      {token && <Header />}
+      <Header />
 
-      <Wrapper>
-        <Routes>
-          <Route path='/login' Component={Login} />
-          <Route
-            path='/'
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/search'
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Wrapper>
+      <Routes>
+        <Route path='/login' Component={Login} />
+        <Route
+          path='/'
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/search'
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </section>
   );
 }

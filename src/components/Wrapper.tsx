@@ -6,7 +6,11 @@ type Props = {
 };
 
 const Wrapper = ({ children }: Props) => {
-  return <section className='container wrapper'>{children}</section>;
+  return (
+    <section className='container wrapper'>
+      <section className='px-8'>{children}</section>
+    </section>
+  );
 };
 
 export default Wrapper;

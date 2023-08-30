@@ -53,7 +53,7 @@ const Home = (props: Props) => {
     if (response?._id) {
       message.success('Create Todo List Success');
       setModalOpen(false);
-      await fetchTodoList(paramsId);
+      await fetchTodoList();
     } else {
       message.success('Something Error');
     }
@@ -88,7 +88,7 @@ const Home = (props: Props) => {
       const response: ResponseToDoType[] = await fetcher(getTodo, METHOD.GET);
       const item = response.find((item) => item.title === value);
       if (item?._id) navigate(`/search?id=${item?._id}`);
-      else navigate('/');
+      else message.error('Item not found');
     } else navigate('/');
   };
 
@@ -112,7 +112,7 @@ const Home = (props: Props) => {
       />
       <section className='lg:w-3/5 md:w-4/5 w-full mx-auto'>
         <section className='mt-16'>
-          <section className='flex justify-between items-center'>
+          <section className='flex md:flex-row flex-col gap-4 justify-between items-start'>
             <section>
               <Input.Search
                 placeholder='Title'
@@ -122,8 +122,15 @@ const Home = (props: Props) => {
                   onSearchTitle(value.trim());
                 }}
               />
+              <div className='text-left mt-1'>
+                <small className='text-gray-500'>
+                  *การ search ไม่ใช้การ filter แต่เป็นการค้นหา item
+                  หนึ่งรายการจาก _id
+                </small>
+              </div>
             </section>
             <section className='flex gap-4 items-center'>
+              <Button onClick={() => fetchTodoList()}>Get All</Button>
               <Button onClick={() => fetchTodoList(paramsId)}>Refresh</Button>
               <Button
                 onClick={() => {
@@ -151,7 +158,12 @@ const Home = (props: Props) => {
                 <List.Item.Meta
                   title={
                     <section className='flex justify-between items-center'>
-                      <div className='text-lg'>{item.title}</div>
+                      <div className='text-lg'>
+                        Title: {item.title}{' '}
+                        <span className='text-sm text-gray-500'>
+                          (_id: {item._id})
+                        </span>
+                      </div>
                       <div className=''>
                         <Tooltip title='edit'>
                           <Button
@@ -190,7 +202,10 @@ const Home = (props: Props) => {
                   }
                   description={
                     <section>
-                      <div className='text-left'>{item.description}</div>
+                      <section className='text-left'>
+                        <div>Description: </div>
+                        <div>{item.description}</div>
+                      </section>
                       <div className='flex justify-end gap-4 text-xs'>
                         <span>
                           created:{' '}

@@ -1,3 +1,4 @@
+import './Login.css';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input, message } from 'antd';
 import { fetcher, METHOD } from '../fetcher';
@@ -30,11 +31,12 @@ const Login = (props: Props) => {
   }
 
   return (
-    <section>
+    <section className='flex justify-center items-center min-h-screen flex-col'>
       <h1 className='text-3xl font-bold mb-4'>Neversitup Todo List</h1>
       <Form
         name='normal_login'
-        className='login-form'
+        className='w-full'
+        style={{ maxWidth: 300 }}
         initialValues={{ remember: true }}
         onFinish={onSubmitLogin}
       >
