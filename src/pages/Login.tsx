@@ -32,7 +32,7 @@ const Login = (props: Props) => {
 
   return (
     <section className='flex justify-center items-center min-h-screen flex-col'>
-      <h1 className='text-3xl font-bold mb-4'>Neversitup Todo List</h1>
+      <h1 className='text-3xl font-bold mb-4'>Login</h1>
       <Form
         name='normal_login'
         className='w-full'
